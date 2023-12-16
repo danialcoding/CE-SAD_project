@@ -1,5 +1,5 @@
 import Header from "../../components/header/header";
-import Home from "./Home";
+import Home from "./home";
 import Footer from "../../components/footer/footer";
 import Signin from "../signin/signin";
 import Signup from "../signup/signup";
