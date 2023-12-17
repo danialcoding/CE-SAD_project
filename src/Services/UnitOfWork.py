@@ -1,5 +1,5 @@
 import sqlite3
-from .UserRepository import UserRepository
+from repositories.UserRepository import UserRepository
 
 
 class UnitOfWork(object):
