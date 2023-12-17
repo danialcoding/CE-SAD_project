@@ -1,6 +1,7 @@
 from datetime import date
+from pydantic import BaseModel
 
-class User(object):
+class User(BaseModel):
     """
     docstring
     """
@@ -14,7 +15,7 @@ class User(object):
     birth_day: date
 
 
-class UserPassword(object):
+class UserPassword(BaseModel):
     """
     docstring
     """
@@ -23,7 +24,7 @@ class UserPassword(object):
     password: str
 
 
-class Question(object):
+class Question(BaseModel):
     """
     docstring
     """
@@ -32,7 +33,7 @@ class Question(object):
     text: str
 
 
-class UserQuestion(object):
+class UserQuestion(BaseModel):
     """
     docstring
     """
