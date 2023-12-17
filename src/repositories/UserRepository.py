@@ -1,16 +1,15 @@
 import sqlite3
-from ...src.models.User import User
+from models.User import User
+
 
 class UserRepository(object):
     """
     docstring
-    """
-    conn: sqlite3.Connection
+    """    
     cur: sqlite3.Cursor
 
-    def __init__(self, dbName):
-        self.conn = sqlite3.connect(f"{dbName}.db")
-        self.cur = self.conn.cursor()
+    def __init__(self,cur):
+        self.cur = cur
 
     def create_table(self):
         self.cur.execute("""
@@ -32,9 +31,6 @@ class UserRepository(object):
                         ({user.user_Name},'{user.name}','{user.family}','{user.phone_number}','{user.email}','{user.birth_day}')
                         """)
         self.conn.commit()
-
-    def __del__(self):
-        self.conn.close()
 
     def getUsers(self, count: int, offset: int = 0) -> list[User]:
         query = f"SELECT * FROM Users LIMIT {count} OFFSET {offset}"
