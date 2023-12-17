@@ -4,7 +4,8 @@ import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { IoFingerPrintOutline } from 'react-icons/io5';
 
-
+// import Signin from '../signin/s'
+import SignUp from '../signup/signup'
 
 import './signin.css';
 
@@ -18,7 +19,7 @@ function Signin(props) {
     //state
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
-    const [stayLogin,setStayLogin] = useState(false);
+    const [staySignin,setStaySignin] = useState(false);
 
     const [passwordShown, setPasswordShown] = useState(false);
     const togglePassword = () => {
@@ -85,22 +86,21 @@ function Signin(props) {
            <div className='signin-container signin'>
                 <form className='form'>
                     <div className='top'>
-                        <h2 className='logo_name'>we aren't divar</h2>
-                        <span className='pageName'>Sing In</span>
+                        <h3 className='pageName'>Sing In</h3>
                         <div className="img"><IoFingerPrintOutline/></div>
                         
                         <p className='link-text'>Not registered yet?{" "}</p>
                         <span className="link-primary" onClick={signUpMode}>Sign Up</span>
                 
                     </div>
-                    <div className="username-div">
+                    <div className="username_div">
                         <div className="icon"><FaUser/></div>
                         <label ><b>Username</b></label>
                         <input type={"text"} placeholder="Enter Username" name="username" onChange={(event)=>{setUsername(event.target.value)}}/>
                     </div>
                     {renderErrorMessage(errors_type.pass)}
 
-                    <div className="pass-div">
+                    <div className="pass_div">
                         <label><b>Password</b></label>
                         <div className="icon"><RiLockPasswordFill/></div>
                         <input  type={passwordShown ? "text" : "password"} placeholder="Enter Password" name="psw" onChange={(event)=>{setPassword(event.target.value)}}/>
@@ -109,17 +109,13 @@ function Signin(props) {
                     </div>
                     {renderErrorMessage(errors_type.pass)}
 
-                    <div className="stay-login">
-                        <input type="checkbox" name="stay_login" checked={stayLogin} onChange={() => {setStayLogin(!stayLogin)}}/>   
+                    <div className="stay-signin">
+                        <input type="checkbox" name="stay_signin" checked={staySignin} onChange={() => {setStaySignin(!staySignin)}}/>   
                         <label>Keep me signed in</label>
                     </div>
 
-                    <div className="bottom">
-                        <button className='submit' type="submit">Submit</button>
-                        <p className="forget_psw">Forgot <span onClick={forgetPswMode}>password?</span></p>
-                    </div>
-                    
-                    
+                    <button className='submit' type="submit">Submit</button>
+                    <p className="forget_psw">Forgot <span onClick={forgetPswMode}>password?</span></p>
 
                 </form>
             </div> 

@@ -4,6 +4,8 @@ import Footer from "../../components/footer/footer";
 import Signin from "../signin/signin";
 import Signup from "../signup/signup";
 
+import Auth from "../authPage/authPage";
+
 import React from "react";
 import {createBrowserRouter,RouterProvider,Route,createRoutesFromElements,Outlet} from "react-router-dom";
 
@@ -35,9 +37,10 @@ const Layout = ({outlet}) => {
             <Route path="/home" element={<Layout outlet={<Home/>}/>}/>
 
 
-            <Route path="/sing-in" element={<Layout outlet={<Signin/>}/>}/>
-            <Route path="/sing-up" element={<Layout outlet={<Signup/>}/>}/>
-            {/* <Route path="/forgetpsw" element={<Layout outlet={}/> */}
+            <Route path="/sing-in" element={<Layout outlet={<Auth mode={"signin"}/>}/>}/>
+            <Route path="/sing-up" element={<Layout outlet={<Auth mode={"signup"}/>}/>}/>
+            <Route path="/forgetpsw" element={<Layout outlet={<Auth mode={"forgetpsw"}/>}/>}/>
+          
 
 
 
