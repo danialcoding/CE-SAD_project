@@ -4,7 +4,9 @@ import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { IoFingerPrintOutline } from 'react-icons/io5';
 
-// import Signin from '../signin/s'
+import { useNavigate } from 'react-router-dom';
+
+
 import SignUp from '../signup/signup'
 
 import './signin.css';
@@ -13,8 +15,23 @@ import './signin.css';
 
 export default Signin;
 
-function Signin(props) {
-    const {signUpMode , forgetPswMode} = props;
+function Signin() {
+    const navigate = useNavigate();
+
+    const signUpMode = () => {
+        return (
+            navigate('/sign-up', { replace: true })
+        )
+    }
+
+    const forgetPswMode = () => {
+        return (
+            navigate('/forgetpassword', { replace: true })
+
+        )
+    }
+
+    
 
     //state
     const [username,setUsername] = useState('');
