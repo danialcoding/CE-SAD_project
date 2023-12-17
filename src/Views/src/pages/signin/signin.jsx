@@ -34,7 +34,7 @@ function Signin(props) {
     const[users,setUsers] = useState([]);
 
     const fetchUsersData = async () => {
-        const resault = await fetch('http://localhost:8080/users');
+        const resault = await fetch('');
         const jsonResault = await resault.json();
 
         setUsers(jsonResault);

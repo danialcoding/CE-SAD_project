@@ -10,35 +10,27 @@ import {createBrowserRouter,RouterProvider,Route,createRoutesFromElements,Outlet
 
 
 const Layout = ({outlet}) => {
-    const path = (window.location.pathname).split("/").filter((str)=> str !== "");
-    
-    if(path[0] === "Dashboard" | path[0] === "dashboard") {
-      return (
+  const path = (window.location.pathname).split("/").filter((str)=> str !== "");
+
+
+    return (
+      <>
+        <Header/>
+  
         <div className="routes">
           {outlet}
         </div>
-      )
-    }
-    else {
-      return (
-        <>
-          <Header/>
-    
-          <div className="routes">
-            {outlet}
-          </div>
-    
-          <Footer/>
-        </>
-      )
-    }
+  
+        <Footer/>
+      </>
+    )
   
     
   }
   
   const Routes = () => {
       const router = createBrowserRouter(createRoutesFromElements(
-          <Route >
+          <Route>
             <Route path="/"  element={<Layout outlet={<Home/>}/>}/>
             <Route path="/home" element={<Layout outlet={<Home/>}/>}/>
 
