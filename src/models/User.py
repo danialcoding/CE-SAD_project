@@ -1,27 +1,30 @@
 from datetime import date
+from typing_extensions import Unpack
 from pydantic import BaseModel
+from pydantic.config import ConfigDict
+
 
 class User(BaseModel):
     """
     docstring
     """
+    id: int = 0
+    user_name: str = ""
+    name: str = ""
+    family: str = ""
+    phone_number: str = ""
+    email: str = ""
+    birth_day: date = date.today()
 
-    id: int
-    user_Name: str
-    name: str
-    family: str
-    phone_number: str
-    email: str
-    birth_day: date
 
-
-class UserPassword(BaseModel):
+class Login(BaseModel):
     """
     docstring
     """
 
-    id: int
-    password: str
+    user_id: int = 0
+    password: str = ""
+    user_name: str = ""
 
 
 class Question(BaseModel):
