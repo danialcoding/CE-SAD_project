@@ -37,17 +37,3 @@ class UnitOfWork(object):
         return res
 
 
-# print("testLogin")
-uow = UnitOfWork("mydb")
-# # uow.users.insert(User(name="sajjad", email="sde@ee.com", family="rezai",
-# #                  phone_number="091903425319", user_name="saji5", birth_day=date(2003, 9, 2), id=0))
-# # uow.commit()
-print(uow.users.get(5))
-# uow.logins.insert(Login(user_name="saji5", password="saj$%$%$"))
-# uow.commit()
-# print(uow.logins.get(5))
-# print(uow.logins.check(Login(user_name="salman",password="1234")))
-# print(uow.logins.check(Login(user_name="saji4",password="1234")))
-# print(uow.logins.check(Login(user_name="saji4",password="saj$%$%$")))
-# print(uow.logins.check(Login(user_name="saji4",password="saj@34s2")))
-# # User()
