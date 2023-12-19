@@ -3,7 +3,7 @@ import {createBrowserRouter,RouterProvider,Route,createRoutesFromElements,Outlet
 
 
 
-import './home.css';
+import './Home.css';
 
 
 export default Home;

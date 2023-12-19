@@ -6,11 +6,10 @@ import { IoFingerPrintOutline } from 'react-icons/io5';
 
 import { useNavigate } from 'react-router-dom';
 
-
-import SignUp from '../signup/signup'
-
 import './signin.css';
 
+
+import { apiURL as URL } from "../../api/api";
 
 
 export default Signin;
@@ -31,6 +30,14 @@ function Signin() {
         )
     }
 
+
+
+    const successSignIn = () => {
+        return (
+            navigate('/', { replace: true })
+        )
+    }
+
     
 
     //state
@@ -45,50 +52,66 @@ function Signin() {
 
     // error States
     const [errorMessages, setErrorMessages] = useState({});
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
 
     //Backend
-    const[users,setUsers] = useState([]);
 
-    const fetchUsersData = async () => {
-        const resault = await fetch('');
-        const jsonResault = await resault.json();
+    const checklogin = async () => {
 
-        setUsers(jsonResault);
+        const data = {
+            "user_id": 0,
+            "password": password,
+            "user_name": username,
+          };
+      
+        const response = await fetch(`${URL}/api/users/login/check`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        return result;
+        
     }
 
 
-    useEffect(()=>{
-        fetchUsersData();
-    },[]);
-
-
-
     const errors = {
+        false: "username or password isn't true",
         username: "invalid username",
         pass: "invalid password"
     };
     const errors_type = {
         username: "username",
         pass: "pass",
+        userpass: "userpass"
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const userData = users.find((user) => user.username === username);
+        
+        if(username === '') {
+            setErrorMessages({name: "username", message: errors.username});
+        }
+        else if (password === '') {
+            setErrorMessages({name: "pass", message: errors.pass});
+        }
+        else {
+            // setErrorMessages({});
+            const res = checklogin();
+            res.then((value)=>{
+                if(value) {
+                    setErrorMessages({});
+                    
+                    successSignIn();
+                    
+                    ///login
+                }
+                else {
+                    setErrorMessages({name: "userpass", message: errors.false});
+                    setErrorMessages({name: "userpass", message: errors.false});
+                }});
 
-        if (userData) {
-            if (userData.password !== password) {
-                setErrorMessages({name: "pass", message: errors.pass});
-            } else {
-                setErrorMessages({});
-                setIsSubmitted(true);
-                //change this
-            }
-        } else {
-            setErrorMessages({ name: "username", message: errors.username});
         }
     };
 
@@ -115,7 +138,8 @@ function Signin() {
                         <label ><b>Username</b></label>
                         <input type={"text"} placeholder="Enter Username" name="username" onChange={(event)=>{setUsername(event.target.value)}}/>
                     </div>
-                    {renderErrorMessage(errors_type.pass)}
+                    {renderErrorMessage(errors_type.username)}
+                    {renderErrorMessage(errors_type.userpass)}
 
                     <div className="pass_div">
                         <label><b>Password</b></label>
@@ -125,13 +149,14 @@ function Signin() {
                 
                     </div>
                     {renderErrorMessage(errors_type.pass)}
+                    {renderErrorMessage(errors_type.userpass)}
 
                     <div className="stay-signin">
                         <input type="checkbox" name="stay_signin" checked={staySignin} onChange={() => {setStaySignin(!staySignin)}}/>   
                         <label>Keep me signed in</label>
                     </div>
 
-                    <button className='submit' type="submit">Submit</button>
+                    <button className='submit' type="submit" onClick={(event)=>{handleSubmit(event)}}>Submit</button>
                     <p className="forget_psw">Forgot <span onClick={forgetPswMode}>password?</span></p>
 
                 </form>

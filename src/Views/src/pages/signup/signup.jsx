@@ -1,28 +1,39 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
-import {
-  FaUser,
-  FaCalendar,
-  FaMailBulk,
-  FaPhone,
-  FaQuestion,
-  FaCircle,
-} from "react-icons/fa";
-import { RiLockPasswordFill, RiLockPasswordLine } from "react-icons/ri";
-import { IoFingerPrintOutline } from "react-icons/io5";
+import {FaUser,FaCalendar,FaMailBulk,FaPhone,FaQuestion,FaCircle,} from "react-icons/fa";
+import { RiLockPasswordFill, RiLockPasswordLine  } from "react-icons/ri";
+//import { IoFingerPrintOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 
 import "./signup.css";
 
+import { apiURL as URL } from "../../api/api";
+
+
+
 export default Signup;
 
-function Signup(props) {
-  const { signInMode, forgetPswMode } = props;
+function Signup() {
+  const navigate = useNavigate();
+
+  const signInMode = () => {
+      return (
+          navigate('/sign-in', { replace: true })
+      )
+  }
+
+  const successSignUp = () => {
+      return (
+          navigate('/', { replace: true })
+      )
+  }
 
   //state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [date, setDate] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -30,6 +41,7 @@ function Signup(props) {
   const [answerPrivateQuestion, setAnswerPrivateQuestion] = useState("");
 
   const [passwordShown, setPasswordShown] = useState(false);
+  
   const togglePassword = () => {
     setPasswordShown(!passwordShown);
   };
@@ -41,47 +53,184 @@ function Signup(props) {
 
   // error States
   const [errorMessages, setErrorMessages] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  //const [isSubmitted, setIsSubmitted] = useState(false);
 
   //Backend
-  const [users, setUsers] = useState([]);
 
-  const fetchUsersData = async () => {
-    const resault = await fetch("");
-    const jsonResault = await resault.json();
+  const signupUser = async () => {
 
-    setUsers(jsonResault);
-  };
+    const data = {
+        "id": 0,
+        "user_name": username,
+        "name": name,
+        "family": lastName,
+        "phone_number": phoneNumber,
+        "email": email,
+        "birth_day": date
+      };
+  
+    const response = await fetch(`${URL}/api/users/`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
 
-  useEffect(() => {
-    fetchUsersData();
-  }, []);
+    return await response.json();
+  }
+
+  const insertPassword = async () => {
+
+    const data = {
+        "user_id": 0,
+        "password": password,
+        "user_name": username,
+      };
+      
+  
+    const response = await fetch(`${URL}/api/users/login`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+    console.log(data);
+
+    const result = await response.json();
+    console.log(result);
+    return result;
+  }
+
+
+  const checkUsername = async () => {
+  
+    const response = await fetch(`${URL}/api/users/check/username?user_name=${username}`, {
+        method: 'GET',
+        headers: { "Content-Type": "application/json" },
+    });
+
+    const result = await response.json();
+    return result;
+  }
+
+  const checkEmail = async () => {
+  
+    const response = await fetch(`${URL}/api/users/check/email?email=${email}`, {
+        method: 'GET',
+        headers: { "Content-Type": "application/json" },
+    });
+
+    return  await response.json();
+  }
+
+  const checkPhoneNumber = async () => {
+  
+    const response = await fetch(`${URL}/api/users/check/phone_number?phone_number=${phoneNumber}`, {
+        method: 'GET',
+        headers: { "Content-Type": "application/json" },
+    });
+
+    return  await response.json();
+  }
 
   const errors = {
-    username: "invalid username",
-    pass: "invalid password",
+    username: "username already exist",
+    username_empty: "invalid username",
+    pass_s: "The password and confirm passwor are not the same",
+    pass_empty: 'invalid password',
+    date: "invalid date",
+    email_empty: "invalid email",
+    email: "email already exist",
+    phoneNumber_empty: "invalid phone number",
+    phoneNumber: "phone number already exist",
+    pquestion: "invalid question",
+    answer: "invalid answer",
+    name: 'invalid first name',
+    lastname: 'invalid last name',
   };
   const errors_type = {
     username: "username",
     pass: "pass",
+    confpass: 'confpass',
+    date: "date",
+    email: "email",
+    phoneNumber: "phoneNumber",
+    pquestion: 'pquestion',
+    answer: 'answer',
+    name: 'name',
+    lastname: 'lastname',
+    passandconfpass: 'passandconfpass',
   };
+
+  const isValidEmail = (email) => {
+      return /\S+@\S+\.\S+/.test(email);
+  }
+  const isValidPhoneNumber = (phoneNumber) => {
+    return /[0-9]{11}/.test(phoneNumber);
+}
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const userData = users.find((user) => user.username === username);
 
-    if (userData) {
-      if (userData.password !== password) {
-        setErrorMessages({ name: "pass", message: errors.pass });
-      } else {
-        setErrorMessages({});
-        setIsSubmitted(true);
-        //change this
-      }
-    } else {
-      setErrorMessages({ name: "username", message: errors.username });
+    if(username === '') {
+      setErrorMessages({name: "username", message: errors.username_empty });
     }
+    else if(name === '') {
+      setErrorMessages({name: "name", message: errors.name});
+    }
+    else if(lastName === '') {
+      setErrorMessages({name: "lastname", message: errors.lastname});
+    }
+    else if(password === '') {
+      setErrorMessages({name: "pass", message: errors.pass_empty});
+    }
+    else if(confirmPassword === '') {
+      setErrorMessages({name: "confpass", message: errors.pass_empty});
+    }
+    else if(confirmPassword !== password) {
+      setErrorMessages({name: "passandconfpass", message: errors.pass_s });
+      setErrorMessages({name: "passandconfpass", message: errors.pass_s });
+   }
+    else if(date === '') {
+      setErrorMessages({name: "date", message: errors.date});
+   }
+    else if(email === '') {
+      setErrorMessages({name: "email", message: errors.email_empty});
+    }
+    else if(isValidEmail(email) !== true) {
+      setErrorMessages({name: "email", message: errors.email_empty});
+    }
+    else if(phoneNumber === '') {
+      setErrorMessages({name: "phoneNumber", message: errors.phoneNumber_empty});
+    }
+    else if(isValidPhoneNumber(phoneNumber) !== true) {
+      setErrorMessages({name: "phoneNumber", message: errors.phoneNumber_empty});
+    }
+    else if(privateQuestion === '') {
+      setErrorMessages({name: "pquestion", message: errors.pquestion});
+    }
+    else if(answerPrivateQuestion === '') {
+      setErrorMessages({name: "answer", message: errors.answer});
+    }
+    else if(!checkUsername()) {
+      setErrorMessages({name: "username", message: errors.username});
+    }
+    else if(!checkEmail()) {
+      setErrorMessages({name: "email", message: errors.email});
+    }
+    else if(!checkPhoneNumber()) {
+      setErrorMessages({name: "phoneNumber", message: errors.phoneNumber});
+    }
+    else{
+      setErrorMessages({});
+      signupUser();
+
+      insertPassword();
+
+      successSignUp();
+      //login
+    }
+
+    
   };
 
   const renderErrorMessage = (name) =>
@@ -101,6 +250,7 @@ function Signup(props) {
               <b>Sign In</b>
             </span>
           </div>
+
           <div className="username_div">
             <div className="icon">
               <FaUser />
@@ -117,7 +267,45 @@ function Signup(props) {
               }}
             />
           </div>
-          {renderErrorMessage(errors_type.pass)}
+          {renderErrorMessage(errors_type.username)}
+
+
+          <div className="name_div">
+            <div className="icon">
+              <FaUser />
+            </div>
+            <label>
+              <b>First Name</b>
+            </label>
+            <input
+              type={"text"}
+              placeholder="Enter your first name"
+              name="name"
+              onChange={(event) => {
+                setName(event.target.value);
+              }}
+            />
+          </div>
+          {renderErrorMessage(errors_type.name)}
+
+
+          <div className="lastname_div">
+            <div className="icon">
+              <FaUser />
+            </div>
+            <label>
+              <b>Lastname</b>
+            </label>
+            <input
+              type={"text"}
+              placeholder="Enter your lastname"
+              name="name"
+              onChange={(event) => {
+                setLastName(event.target.value);
+              }}
+            />
+          </div>
+          {renderErrorMessage(errors_type.lastname)}
 
           <div className="pass_div">
             <label>
@@ -139,6 +327,7 @@ function Signup(props) {
             </div>
           </div>
           {renderErrorMessage(errors_type.pass)}
+          {renderErrorMessage(errors_type.passandconfpass)}
 
           <div className="pass_div">
             <label>
@@ -159,6 +348,8 @@ function Signup(props) {
               {confirmpasswordShown ? <BiShow /> : <BiHide />}
             </div>
           </div>
+          {renderErrorMessage(errors_type.confpass)}
+          {renderErrorMessage(errors_type.passandconfpass)}
 
           <div className="username_div">
             <div className="icon">
@@ -176,6 +367,7 @@ function Signup(props) {
               }}
             />
           </div>
+          {renderErrorMessage(errors_type.date)}
 
           <div className="username_div">
             <div className="icon">
@@ -193,6 +385,8 @@ function Signup(props) {
               }}
             />
           </div>
+          {renderErrorMessage(errors_type.email)}
+
 
           <div className="username_div">
             <div className="icon">
@@ -210,6 +404,8 @@ function Signup(props) {
               }}
             />
           </div>
+          {renderErrorMessage(errors_type.phoneNumber)}
+
 
           <div className="username_div">
             <div className="icon">
@@ -227,6 +423,7 @@ function Signup(props) {
               }}
             />
           </div>
+          {renderErrorMessage(errors_type.pquestion)}
 
           <div className="username_div">
             <div className="icon">
@@ -244,8 +441,9 @@ function Signup(props) {
               }}
             />
           </div>
+          {renderErrorMessage(errors_type.answer)}
 
-          <button className="submit" type="submit">
+          <button className="submit" type="submit" onClick={(event)=>{handleSubmit(event)}}>
             Submit
           </button>
         </form>

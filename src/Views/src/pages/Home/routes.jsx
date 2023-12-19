@@ -1,5 +1,5 @@
 import Header from "../../components/header/header";
-import Home from "./home";
+import Home from "./Home";
 import Footer from "../../components/footer/footer";
 import Signin from "../signin/signin";
 import Signup from "../signup/signup";
@@ -16,13 +16,13 @@ const Layout = ({outlet}) => {
 
     return (
       <>
-        <Header/>
+        {/* <Header/> */}
   
         <div className="routes">
           {outlet}
         </div>
   
-        <Footer/>
+        {/* <Footer/> */}
       </>
     )
   
