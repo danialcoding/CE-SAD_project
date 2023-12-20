@@ -9,9 +9,17 @@ def add_controller(app: FastAPI, uof: UnitOfWork):
     """
     @app.post("/api/users/login")
     async def insert_login(user: Login):
-        uof.users.insert(user)
-        uof.commit()
+        try:
+            uof.users.insert(user)
+            uof.commit()
+        except:
+            return False
+
     
     @app.post("/api/users/login/check")
     async def check_login(login: Login):
-        return uof.logins.check(login)
+        try:
+            return uof.logins.check(login)
+        except:
+            return False
+        
