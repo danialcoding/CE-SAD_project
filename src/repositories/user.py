@@ -69,7 +69,8 @@ class UserRepository(Repo):
     ### non direct query functions \/
 
     def get_id_by_user_name(self, user_name: str) -> Union[int, None]:
-        return self.get_by_user_name(user_name).id
+        res = self.get_by_user_name(user_name)
+        return None if res is None else res.id
 
     def get_id_by_email(self, email: str) -> Union[int, None]:
         return self.get_by_email(email).id

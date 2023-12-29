@@ -62,12 +62,14 @@ class LoginRepository(Repo):
         docstring
         """
         user_id = self.user_repository.get_id_by_user_name(login.user_name)
+        if user_id is None:
+            return False
         lgn = self._find("user_id", user_id)
         return False if (login is None) else (login.password == lgn.password)
 
     def change_password(self, email: str, password: str) -> bool:
         user_id = self.user_repository.get_id_by_email(email)
-        if user_id in None:
+        if user_id is None:
             return False
         query = f"""UPDATE {self.tn}
             SET password = '{password}'
@@ -85,5 +87,7 @@ class LoginRepository(Repo):
             return None
         model = self.model()
         for i, atr in enumerate(self.model.__annotations__.keys()):
+            if atr == "user_name":
+                continue
             model.__setattr__(atr, result[i])
         return model
