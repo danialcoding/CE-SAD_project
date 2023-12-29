@@ -65,6 +65,13 @@ class LoginRepository(Repo):
         lgn = self._find("user_id", user_id)
         return False if (login is None) else (login.password == lgn.password)
 
+    def change_password(self, email: str, password: str) -> bool:
+        user_id = self.user_repository.get_id_by_email(email)
+        query = f"""UPDATE {self.tn}
+            SET password = '{password}'
+            WHERE user_id = {user_id};
+        """
+
     def _find(self, field: str, value: Union[int, str]) -> Login:
         query = f"""SELECT * FROM {self.tn}
         where {field}='{value}'
