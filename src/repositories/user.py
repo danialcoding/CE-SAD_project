@@ -2,6 +2,7 @@ from datetime import date
 import sqlite3
 from typing import Union
 from models.user import User
+from repositories import dfdfd
 from repositories.repo import Repo
 
 
@@ -28,16 +29,18 @@ class UserRepository(Repo):
                     family nvarchar(50),
                     phone_number nchar(11) UNIQUE Not null,
                     email varchar(50) UNIQUE Not null,
-                    birth_day DATE
+                    birth_day DATE,
+                    question nvarchar(150) Not null,
+                    question_answer  nvarchar(150) Not null
                 );"""
         )
 
     def insert(self, user: User) -> None:
         query = f"""
                 insert into {self.tn}
-                (user_name,name,family,phone_number,email,birth_day)
+                (user_name,name,family,phone_number,email,birth_day,question,question_answer)
                 values
-                ('{user.user_name}','{user.name}','{user.family}','{user.phone_number}','{user.email}','{user.birth_day}')
+                ('{user.user_name}','{user.name}','{user.family}','{user.phone_number}','{user.email}','{user.birth_day}','{user.question}','{user.question_answer}')
                 """
         self.cur.execute(query)
 
@@ -53,37 +56,58 @@ class UserRepository(Repo):
         return objects
 
     def get_by_user_name(self, user_name: str) -> Union[User, None]:
-        return self._find("user_name",user_name)
+        return self._find("user_name", user_name)
 
-    def get_by_id(self, id: str) -> Union[int, None]:
-        return self._find("id",id)
+    def get_by_id(self, id: str) -> Union[User, None]:
+        return self._find("id", id)
+
+    def get_by_phone_number(self, phone_number: str) -> Union[User, None]:
+        return self._find("phone_number", phone_number)
+
+    def get_by_email(self, email: str) -> Union[User, None]:
+        return self._find("email", email)
+
+    ### non direct query functions \/
 
     def get_id_by_user_name(self, user_name: str) -> Union[int, None]:
-        return self._find("user_name",user_name).id
+        return self.get_by_user_name(user_name).id
 
     def get_id_by_email(self, email: str) -> Union[int, None]:
-        return self._find("email",email).id
+        return self.get_by_email(email).id
 
     def get_user_name_by_id(self, id: str) -> Union[int, None]:
-        return self._find("id",id).user_name
+        return self.get_by_id(id).user_name
+
+    def get_question_by_email(self, email: str) -> Union[str, None]:
+        return self.get_by_email(email).question
+
+    ### check availability \/
 
     def check_user_name(self, user_name: str) -> bool:
         """
         check if username available
         """
-        return self._find("user_name",user_name) is None
+        return self.get_by_user_name(user_name) is None
 
     def check_email(self, email: str) -> bool:
         """
         check if username available
         """
-        return self._find("email",email) is None
+        return self.get_by_email(email) is None
 
     def check_phone_number(self, phone_number: str) -> bool:
         """
         check if username available
         """
-        return self._find("phone_number",phone_number) is None
+        return self.get_by_phone_number(phone_number) is None
+
+    ### check validity
+
+    def check_question_answer(self, email: str, answer: str) -> bool:
+        user = self.get_by_email(email)
+        return False if user is None else user.question_answer == answer
+
+    ### tools
 
     def _find(self, field: str, value: Union[int, date, str]) -> User:
         query = f"""SELECT * FROM {self.tn}
