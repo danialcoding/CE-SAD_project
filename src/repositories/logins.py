@@ -67,10 +67,14 @@ class LoginRepository(Repo):
 
     def change_password(self, email: str, password: str) -> bool:
         user_id = self.user_repository.get_id_by_email(email)
+        if user_id in None:
+            return False
         query = f"""UPDATE {self.tn}
             SET password = '{password}'
             WHERE user_id = {user_id};
         """
+        self.cur.execute(query)
+        return True
 
     def _find(self, field: str, value: Union[int, str]) -> Login:
         query = f"""SELECT * FROM {self.tn}
