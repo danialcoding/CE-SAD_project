@@ -28,3 +28,18 @@ def add_controller(app: FastAPI, uof: UnitOfWork):
     @app.get("/api/users/check/phone_number")
     async def user_check_phone_number_available(phone_number: str):
         return uof.users.check_phone_number(phone_number)
+
+    @app.get("/api/users/get/question")
+    async def user_get_question(email: str):
+        return uof.users.get_question_by_email(email)
+
+    @app.get("/api/users/validate/forgotpassword")
+    async def user_validate_forgotpassword(email: str, answer: str):
+        return uof.users.check_question_answer(email,answer)
+
+    @app.get("/api/users/change-password")
+    async def user_change_password(email: str, password: str):
+        res = uof.logins.change_password(email,password)
+        uof.commit()
+        return res
+    
