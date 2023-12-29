@@ -1,3 +1,4 @@
+from datetime import date
 import sqlite3
 from typing import Union
 from models.user import User
@@ -8,6 +9,7 @@ class UserRepository(Repo):
     """
     docstring
     """
+
     cur: sqlite3.Cursor
     tn = "Users"
     model = User
@@ -16,7 +18,8 @@ class UserRepository(Repo):
         self.cur = cur
 
     def create_table(self) -> None:
-        self.cur.execute(f"""
+        self.cur.execute(
+            f"""
                 create table IF NOT EXISTS {self.tn}
                 (
                     id integer primary key autoincrement,
@@ -26,7 +29,8 @@ class UserRepository(Repo):
                     phone_number nchar(11) UNIQUE Not null,
                     email varchar(50) UNIQUE Not null,
                     birth_day DATE
-                );""")
+                );"""
+        )
 
     def insert(self, user: User) -> None:
         query = f"""
@@ -49,82 +53,46 @@ class UserRepository(Repo):
         return objects
 
     def get_by_user_name(self, user_name: str) -> Union[User, None]:
-        query = f"""SELECT * FROM {self.tn}
-        where user_name='{user_name}'
-        """
-        result = self.cur.execute(query).fetchone()
-        if result is None:
-            return None
-        model = self.model()
-        for i, ant in enumerate(self.model.__annotations__.keys()):
-            model.__setattr__(ant, result[i])
-        return model
+        return self._find("user_name",user_name)
+
+    def get_by_id(self, id: str) -> Union[int, None]:
+        return self._find("id",id)
 
     def get_id_by_user_name(self, user_name: str) -> Union[int, None]:
-        query = f"""SELECT * FROM {self.tn}
-        where user_name='{user_name}'
-        """
-        result = self.cur.execute(query).fetchone()
-        if result is None:
-            return None
-        model = self.model()
-        for i, ant in enumerate(self.model.__annotations__.keys()):
-            model.__setattr__(ant, result[i])
-        return model.id
+        return self._find("user_name",user_name).id
 
-    def get_user_by_id(self, id: str) -> Union[int, None]:
-        query = f"""SELECT * FROM {self.tn}
-        where id='{id}'
-        """
-        result = self.cur.execute(query).fetchone()
-        if result is None:
-            return None
-        model = self.model()
-        for i, ant in enumerate(self.model.__annotations__.keys()):
-            model.__setattr__(ant, result[i])
-        return model
+    def get_id_by_email(self, email: str) -> Union[int, None]:
+        return self._find("email",email).id
 
     def get_user_name_by_id(self, id: str) -> Union[int, None]:
-        query = f"""SELECT * FROM {self.tn}
-        where id='{id}'
-        """
-        result = self.cur.execute(query).fetchone()
-        if result is None:
-            return None
-        model = self.model()
-        for i, ant in enumerate(self.model.__annotations__.keys()):
-            model.__setattr__(ant, result[i])
-        return model.user_name
+        return self._find("id",id).user_name
 
     def check_user_name(self, user_name: str) -> bool:
         """
         check if username available
         """
-        query = f"""
-        select 1 from {self.tn}
-        where user_Name='{user_name}'
-        """
-        res = self.cur.execute(query).fetchone()
-        return res is None
+        return self._find("user_name",user_name) is None
 
     def check_email(self, email: str) -> bool:
         """
         check if username available
         """
-        query = f"""
-        select 1 from {self.tn}
-        where email='{email}'
-        """
-        res = self.cur.execute(query).fetchone()
-        return res is None
+        return self._find("email",email) is None
 
     def check_phone_number(self, phone_number: str) -> bool:
         """
         check if username available
         """
-        query = f"""
-        select 1 from {self.tn}
-        where phone_number='{phone_number}'
+        return self._find("phone_number",phone_number) is None
+
+    def _find(self, field: str, value: Union[int, date, str]) -> User:
+        query = f"""SELECT * FROM {self.tn}
+        where {field}='{value}'
         """
-        res = self.cur.execute(query).fetchone()
-        return res is None
+        result = self.cur.execute(query).fetchone()
+        if result is None:
+            return None
+        model = self.model()
+        for i, atr in enumerate(self.model.__annotations__.keys()):
+            model.__setattr__(atr, result[i])
+        return model
