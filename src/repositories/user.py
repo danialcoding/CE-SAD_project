@@ -2,7 +2,6 @@ from datetime import date
 import sqlite3
 from typing import Union
 from models.user import User
-from repositories import dfdfd
 from repositories.repo import Repo
 
 
