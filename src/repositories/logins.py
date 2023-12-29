@@ -1,5 +1,6 @@
 from math import log
 import sqlite3
+from typing import Union
 from models.user import Login, User
 from repositories.repo import Repo
 from repositories.user import UserRepository
@@ -9,6 +10,7 @@ class LoginRepository(Repo):
     """
     docstring
     """
+
     cur: sqlite3.Cursor
     tn = "Logins"
     model = Login
@@ -19,13 +21,15 @@ class LoginRepository(Repo):
         self.user_repository = user_repository
 
     def create_table(self) -> None:
-        self.cur.execute(f"""
+        self.cur.execute(
+            f"""
                 create table IF NOT EXISTS {self.tn}
                 (
                     user_id int primary key,
                     password nvarchar(11) Not null,
                     foreign key(user_id) references Users(id)
-                );""")
+                );"""
+        )
 
     def insert(self, login: Login) -> None:
         id = self.user_repository.get_id_by_user_name(login.user_name)
@@ -52,14 +56,38 @@ class LoginRepository(Repo):
                 model.__setattr__(ant, row[i])
             objects.append(model)
         return objects
-    def check(self, login:Login)-> bool:
+
+    def check(self, login: Login) -> bool:
         """
         docstring
         """
-        login.user_id = self.user_repository.get_id_by_user_name(login.user_name)
-        query = f"""
-        select 1 from {self.tn}
-        where user_id='{login.user_id}' and  password='{login.password}'
+        user_id = self.user_repository.get_id_by_user_name(login.user_name)
+        if user_id is None:
+            return False
+        lgn = self._find("user_id", user_id)
+        return False if (login is None) else (login.password == lgn.password)
+
+    def change_password(self, email: str, password: str) -> bool:
+        user_id = self.user_repository.get_id_by_email(email)
+        if user_id is None:
+            return False
+        query = f"""UPDATE {self.tn}
+            SET password = '{password}'
+            WHERE user_id = {user_id};
         """
-        res = self.cur.execute(query).fetchone()
-        return res is not None
+        self.cur.execute(query)
+        return True
+
+    def _find(self, field: str, value: Union[int, str]) -> Login:
+        query = f"""SELECT * FROM {self.tn}
+        where {field}='{value}'
+        """
+        result = self.cur.execute(query).fetchone()
+        if result is None:
+            return None
+        model = self.model()
+        for i, atr in enumerate(self.model.__annotations__.keys()):
+            if atr == "user_name":
+                continue
+            model.__setattr__(atr, result[i])
+        return model

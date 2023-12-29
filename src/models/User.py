@@ -15,7 +15,8 @@ class User(BaseModel):
     phone_number: str = ""
     email: str = ""
     birth_day: date = date.today()
-
+    question: str = ""
+    question_answer :str = ""
 
 class Login(BaseModel):
     """
@@ -25,22 +26,3 @@ class Login(BaseModel):
     user_id: int = 0
     password: str = ""
     user_name: str = ""
-
-
-class Question(BaseModel):
-    """
-    docstring
-    """
-
-    id: int
-    text: str
-
-
-class UserQuestion(BaseModel):
-    """
-    docstring
-    """
-
-    id: int
-    question_id: int
-    answer: str

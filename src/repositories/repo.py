@@ -18,3 +18,6 @@ class Repo(object):
 
     def get(self, count: int, offset: int = 0) -> list[BaseModel]:
         raise NotImplementedError
+
+    def _find():
+        raise NotImplementedError
