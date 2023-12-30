@@ -10,7 +10,7 @@ import {FaUser,FaCalendar,FaMailBulk,FaPhone,FaQuestion,FaCircle,} from "react-i
 
 import './profile.css';
 
-import Forgetpassword from "../forgetPassword/forgetpassword";
+import UserInformation from "../../components/userInformation/userInformation";
 
 export default Profile;
 
@@ -29,7 +29,7 @@ function Profile() {
                         // only apply styles on first level elements of the tree
                         if (level === 0)
                         return {
-                            color: disabled ? '#f5d9ff' : '#d359ff',
+                            color: disabled ? '#000' : '#000',
                             backgroundColor: active ? '#304D30' : undefined,
                         };
                     },
@@ -39,11 +39,8 @@ function Profile() {
                     icon: {
                         color: '#f0000',
                     },
-                    prefix: {
-                        background: '#000'
-                    },
                     SubMenuExpandIcon: {
-                        color: '#f0000',
+                        color: '#000',
                     },
                     subMenuContent: {
                         color: '#fd0600',
@@ -58,7 +55,7 @@ function Profile() {
                     
                 </Menu>
             </Sidebar>
-            <main style={{ padding: 10 }}> Main content</main>
+            <main className="main"> <UserInformation/></main>
         </div>
         
         </>
