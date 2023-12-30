@@ -6,6 +6,8 @@ import Signup from "../signup/signup";
 import Forgetpassword from "../forgetPassword/forgetpassword";
 import Profile from "../profile/profile";
 
+import UserInformation from "../../components/userInformation/userInformation";
+
 import React from "react";
 import {createBrowserRouter,RouterProvider,Route,createRoutesFromElements,Outlet} from "react-router-dom";
 
@@ -43,6 +45,7 @@ const Layout = ({outlet}) => {
 
 
             <Route path="/profile" element={<Layout outlet={<Profile/>}/>}/>
+            <Route path="/t" element={<Layout outlet={<UserInformation/>}/>}/>
           
 
 
