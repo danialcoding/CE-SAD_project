@@ -1,4 +1,5 @@
 import io
+import os
 from fastapi import FastAPI
 from models.user import Login, User
 from services.unit_of_work import UnitOfWork
@@ -49,3 +50,20 @@ def add_controller(app: FastAPI, uof: UnitOfWork):
         uof.commit()
         return res
 
+    @app.post("/api/users/image")
+    async def user_change_image(file: UploadFile,username:str ,extention: str):
+        uid = uof.users.get_id_by_user_name(username)
+        f = open(f"{uid}.{extention}",'wb')
+        f.write(file.file.read())
+        f.flush()
+        f.close()
+        return {"file_size": file.size}
+
+    @app.get("/api/users/{user_name}/image")
+    async def user_get_image(user_name:str):
+        uid = uof.users.get_id_by_user_name(user_name)
+        dir = os.listdir()
+        for i in dir:
+            if i.startswith(str(uid)):
+                dir = i
+        return res
