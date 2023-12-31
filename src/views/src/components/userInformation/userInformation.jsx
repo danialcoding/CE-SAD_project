@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState , useEffect  } from "react";
 import { MdDashboard } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
 import { MdEditSquare } from "react-icons/md";
@@ -56,8 +56,159 @@ function UserInformation() {
     };
 
 
-    //backend check and edit
+    useEffect(()=>{
+        fetchUserData();
+    },[]);
+
+    // const fetchTeamsData = async () => {
+    //     const resault = await fetch('http://localhost:8080/teams/top10');
+    //     const jsonResault = await resault.json();
+
+    //     setTop10Teams(jsonResault);
+    // }
+
+
+
     
+    //backend check and edit
+    const fetchUserData = async () => {
+        const response = await fetch(`${URL}/api/users/check/username?user_name=${username}`, {
+            method: 'GET',
+            headers: { "Content-Type": "application/json" },
+        });
+    
+        const result = await response.json();
+        
+        setUsername(result.username);
+        setPassword(result.password);
+        setName(result.name);
+        setLastName(result.family);
+        setEmail(result.email);
+        setPhoneNumber(result.phoneNumber);
+        setPrivateQuestion(result.password);
+        setAnswerPrivateQuestion(result.password);
+
+
+    }
+
+    const editUsername = async () => {
+        const data = {
+            "id": 0,
+            "user_name": username,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
+    const editPassword = async () => {
+        const data = {
+            "id": 0,
+            "user_name": password,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
+    const editName = async () => {
+        const data = {
+            "id": 0,
+            "user_name": name,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
+    const editEmail = async () => {
+        const data = {
+            "id": 0,
+            "user_name": email,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
+    const editLastName = async () => {
+        const data = {
+            "id": 0,
+            "user_name": lastName,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
+    const editphoneNumber = async () => {
+        const data = {
+            "id": 0,
+            "user_name": phoneNumber,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+
+    const editPrivateQuestion = async () => {
+        const data = {
+            "id": 0,
+            "user_name": privateQuestion,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
+    const editAnswerPrivateQuestion = async () => {
+        const data = {
+            "id": 0,
+            "user_name": answerPrivateQuestion,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+    }
 
 
 
@@ -151,7 +302,44 @@ function UserInformation() {
 
 
     //handle edit
-    const closeEditMode = (event,param) => {
+    const cancelEditMode = (event,param)  => {
+        switch (param) {
+            case 'username':
+                setErrorMessages({});
+                setUsernameEditMode(false);
+                break;
+            case 'password':
+                setErrorMessages({});
+                setPasswordEditMode(false);
+                break;
+            case 'lastName':
+                setErrorMessages({});
+                setLastNameEditMode(false);
+                break;
+            case 'name':
+                setErrorMessages({});
+                setNameEditMode(false);
+                break;
+            case 'email':
+                setErrorMessages({});
+                setEmailEditMode(false);
+                break;
+            case 'phoneNumber':
+                setErrorMessages({});
+                setPhoneNumberEditMode(false);
+                break;
+            case 'privateQuestion':
+                setErrorMessages({});
+                setPrivateQuestionEditMode(false);
+                break;
+            case 'answerPrivateQuestion':
+                setErrorMessages({});
+                setAnswerPrivateQuestionEditMode(false);
+                break;
+            default:
+        }
+    }
+    const closeEditMode = (event,param)  => {
         switch (param) {
             case 'username':
                 if(username === '') {
@@ -163,6 +351,7 @@ function UserInformation() {
                 else {
                     setErrorMessages({});
                     setUsernameEditMode(false);
+                    
                 }
                 break;
             case 'password':
@@ -305,7 +494,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Username</label>
                         {usernameEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'username')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'username')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -325,7 +514,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Email</label>
                         {emailEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'email')}} aria-label="Cancel" title="Cancel" >
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'email')}} aria-label="Cancel" title="Cancel" >
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -345,7 +534,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Password</label>
                         {passwordEditMode && (
-                            <button className="textfield--header-action" onClick={(e)=> {closeEditMode(e,'password')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action" onClick={(e)=> {cancelEditMode(e,'password')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -368,7 +557,7 @@ function UserInformation() {
                         <div className="top">
                         <label>First Name</label>
                         {nameEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'name')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'name')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -389,7 +578,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Last Name</label>
                         {lastNameEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'lastName')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'lastName')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -410,7 +599,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Phone Number</label>
                         {phoneNumberEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'phoneNumber')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'phoneNumber')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -430,7 +619,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Private Question</label>
                         {privateQuestionEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'privateQuestion')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'privateQuestion')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -451,7 +640,7 @@ function UserInformation() {
                         <div className="top">
                         <label>Answer Private Question</label>
                         {answerPrivateQuestionEditMode && (
-                            <button className="textfield--header-action"onClick={(e)=> {closeEditMode(e,'answerPrivateQuestion')}} aria-label="Cancel" title="Cancel">
+                            <button className="textfield--header-action"onClick={(e)=> {cancelEditMode(e,'answerPrivateQuestion')}} aria-label="Cancel" title="Cancel">
                                 <IoClose aria-hidden="true" />
                             </button>
                             )}
@@ -479,7 +668,7 @@ function UserInformation() {
                     <div className="top">
                     <label>Phone Number</label>
                     {phoneNumberEditMode && (
-                        <button className="textfield--header-action"onClick={closeEditMode} aria-label="Cancel" title="Cancel" aria-controls={id}>
+                        <button className="textfield--header-action"onClick={cancelEditMode} aria-label="Cancel" title="Cancel" aria-controls={id}>
                             <IoClose aria-hidden="true" />
                         </button>
                         )}
