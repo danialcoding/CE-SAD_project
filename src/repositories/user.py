@@ -134,50 +134,50 @@ class UserRepository(Repo):
 
     ## update
 
-    def edit_user_name(self, new: str, old: str) -> True:
+    def edit_user_name(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("user_name", new, old)
+        self._update("user_name", value, user_name)
 
-    def edit_name(self, new: str, old: str) -> True:
+    def edit_name(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("name", new, old)
+        self._update("name", value, user_name)
 
-    def edit_family(self, new: str, old: str) -> True:
+    def edit_family(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("family", new, old)
+        self._update("family", value, user_name)
 
-    def edit_phone_number(self, new: str, old: str) -> True:
+    def edit_phone_number(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("phone_number", new, old)
+        self._update("phone_number", value, user_name)
 
-    def edit_email(self, new: str, old: str) -> True:
+    def edit_email(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("email", new, old)
+        self._update("email", value, user_name)
 
-    def edit_birth_day(self, new: str, old: str) -> True:
+    def edit_birth_day(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("birth_day", new, old)
+        self._update("birth_day", value, user_name)
 
-    def edit_question(self, new: str, old: str) -> True:
+    def edit_question(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("question", new, old)
+        self._update("question", value, user_name)
 
-    def edit_question_answer(self, new: str, old: str) -> True:
+    def edit_question_answer(self, value: str, user_name: str) -> True:
         """
         docstring
         """
-        self._update("question_answer", new, old)
+        self._update("question_answer", value, user_name)
