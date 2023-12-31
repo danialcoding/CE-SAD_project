@@ -3,7 +3,10 @@ import Home from "./Home";
 import Footer from "../../components/footer/footer";
 import Signin from "../signin/signin";
 import Signup from "../signup/signup";
-import Forgetpassword from "../forgetPassword/forgetpassword"
+import Forgetpassword from "../forgetPassword/forgetpassword";
+import Profile from "../profile/profile";
+
+import UserInformation from "../../components/userInformation/userInformation";
 
 import React from "react";
 import {createBrowserRouter,RouterProvider,Route,createRoutesFromElements,Outlet} from "react-router-dom";
@@ -39,6 +42,10 @@ const Layout = ({outlet}) => {
             <Route path="/sign-in" element={<Layout outlet={<Signin/>}/>}/>
             <Route path="/sign-up" element={<Layout outlet={<Signup/>}/>}/>
             <Route path="/forgetpassword" element={<Layout outlet={<Forgetpassword/>}/>}/>
+
+
+            <Route path="/profile" element={<Layout outlet={<Profile/>}/>}/>
+            <Route path="/t" element={<Layout outlet={<UserInformation/>}/>}/>
           
 
 

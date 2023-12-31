@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'arial';
+    src: url('../../fonts/Ariel\ Script.ttf') format('true type');
+}
+.profile *{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'arial';
+}
+.profile-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    /* background: #EEF0E5; */
+}
+.profile .main {
+    width: 100%;
+}
