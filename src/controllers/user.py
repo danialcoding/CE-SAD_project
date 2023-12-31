@@ -69,7 +69,6 @@ def add_controller(app: FastAPI, uof: UnitOfWork):
         f: io.TextIOWrapper = open(path, "r")
         # fr = FileResponse()
         # fr.filename = path
-
         return path
 
     @app.post("/api/users/{user_name}/image")
@@ -82,3 +81,37 @@ def add_controller(app: FastAPI, uof: UnitOfWork):
             f.write(file.file.read())
             f.flush()
         return True
+
+    ## update
+
+    @app.patch("/api/users/{user_name}/user-name")
+    async def user_edit_user_name(user_name: str, value: str):
+        uof.users.edit_user_name(value, user_name)
+
+    @app.patch("/api/users/{user_name}/edit-name")
+    async def user_edit_name(user_name: str, value: str):
+        uof.users.edit_name(value, user_name)
+
+    @app.patch("/api/users/{user_name}/family")
+    async def user_edit_family(user_name: str, value: str):
+        uof.users.edit_family(value, user_name)
+
+    @app.patch("/api/users/{user_name}/phone-number")
+    async def user_phone_number(user_name: str, value: str):
+        uof.users.edit_phone_number(value, user_name)
+
+    @app.patch("/api/users/{user_name}/email")
+    async def user_edit_email(user_name: str, value: str):
+        uof.users.edit_email(value, user_name)
+
+    @app.patch("/api/users/{user_name}/birth-day")
+    async def user_birth_day(user_name: str, value: str):
+        uof.users.edit_birth_day(value, user_name)
+
+    @app.patch("/api/users/{user_name}/question")
+    async def user_question(user_name: str, value: str):
+        uof.users.edit_question(value, user_name)
+
+    @app.patch("/api/users/{user_name}/question-answer")
+    async def user_question_answer(user_name: str, value: str):
+        uof.users.edit_question_answer(value, user_name)
