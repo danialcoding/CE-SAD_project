@@ -4,6 +4,10 @@ import { MdDashboard } from "react-icons/md";
 import { IoIosSave } from "react-icons/io";
 import { MdEditSquare } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
+import { BiShow,BiHide } from "react-icons/bi";
+
+
+
 
 
 import './userInformation.css';
@@ -13,47 +17,502 @@ import './userInformation.css';
 export default UserInformation;
 
 function UserInformation() {
-    const [username, setUsername] = useState("test");
-    const [editMode, setEditMode] = useState(false);
-    const [id, setId] = useState(false);
+    const [username, setUsername] = useState("username");
+    const [usernameEditMode, setUsernameEditMode] = useState(false);
+
+    const [password, setPassword] = useState("password");
+    const [passwordEditMode, setPasswordEditMode] = useState(false);
+
+    const [name, setName] = useState("name");
+    const [nameEditMode, setNameEditMode] = useState(false);
+
+    const [lastName, setLastName] = useState("lastname");
+    const [lastNameEditMode, setLastNameEditMode] = useState(false);
+
+    // const [date, setDate] = useState("date");
+    // const [dateEditMode, setDateEditMode] = useState(false);
+
+    const [email, setEmail] = useState("email");
+    const [emailEditMode, setEmailEditMode] = useState(false);
+
+    const [phoneNumber, setPhoneNumber] = useState("phone number");
+    const [phoneNumberEditMode, setPhoneNumberEditMode] = useState(false);
+
+    const [privateQuestion, setPrivateQuestion] = useState("question");
+    const [privateQuestionEditMode, setPrivateQuestionEditMode] = useState(false);
+
+    const [answerPrivateQuestion, setAnswerPrivateQuestion] = useState("awnswer");
+    const [answerPrivateQuestionEditMode, setAnswerPrivateQuestionEditMode] = useState(false);
+
+
+    
+    const [errorMessages, setErrorMessages] = useState({});
+
+    
+    const [passwordShown, setPasswordShown] = useState(false);
+    
+    const togglePassword = () => {
+        setPasswordShown(!passwordShown);
+    };
+
+    //backend
+    const signupUser = async () => {
+
+        const data = {
+            "id": 0,
+            "user_name": username,
+            "name": name,
+            "family": lastName,
+            "phone_number": phoneNumber,
+            "email": email,
+          };
+      
+        const response = await fetch(`${URL}/api/users/`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+    
+        return await response.json();
+      }
+    
+      const insertPassword = async () => {
+    
+        const data = {
+            "user_id": 0,
+            "password": password,
+            "user_name": username,
+          };
+          
+      
+        const response = await fetch(`${URL}/api/users/login`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        console.log(data);
+    
+        const result = await response.json();
+        console.log(result);
+        return result;
+      }
+    
+    
+      const checkUsername = async () => {
+      
+        const response = await fetch(`${URL}/api/users/check/username?user_name=${username}`, {
+            method: 'GET',
+            headers: { "Content-Type": "application/json" },
+        });
+    
+        const result = await response.json();
+        return result;
+      }
+    
+      const checkEmail = async () => {
+      
+        const response = await fetch(`${URL}/api/users/check/email?email=${email}`, {
+            method: 'GET',
+            headers: { "Content-Type": "application/json" },
+        });
+    
+        return  await response.json();
+      }
+    
+      const checkPhoneNumber = async () => {
+      
+        const response = await fetch(`${URL}/api/users/check/phone_number?phone_number=${phoneNumber}`, {
+            method: 'GET',
+            headers: { "Content-Type": "application/json" },
+        });
+    
+        return  await response.json();
+      }
 
 
 
 
 
-    const closeEditMode = () => {
-        setEditMode(false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const errors = {
+        username: "username already exist",
+        username_empty: "invalid username",
+        pass_s: "The password and confirm passwor are not the same",
+        pass_empty: 'invalid password',
+        date: "invalid date",
+        email_empty: "invalid email",
+        email: "email already exist",
+        phoneNumber_empty: "invalid phone number",
+        phoneNumber: "phone number already exist",
+        pquestion: "invalid question",
+        answer: "invalid answer",
+        name: 'invalid first name',
+        lastname: 'invalid last name',
+      };
+      const errors_type = {
+        username: "username",
+        pass: "pass",
+        confpass: 'confpass',
+        date: "date",
+        email: "email",
+        phoneNumber: "phoneNumber",
+        pquestion: 'pquestion',
+        answer: 'answer',
+        name: 'name',
+        lastname: 'lastname',
+        passandconfpass: 'passandconfpass',
+      };
+    
+      const isValidEmail = (email) => {
+          return /\S+@\S+\.\S+/.test(email);
+      }
+      const isValidPhoneNumber = (phoneNumber) => {
+        return /[0-9]{11}/.test(phoneNumber);
     }
     
-    const openEditMode = () => {
-        setEditMode(true)
+      const handleSubmit = (event) => {
+        event.preventDefault();
+    
+    
+        if(username === '') {
+          setErrorMessages({name: "username", message: errors.username_empty });
+        }
+        else if(name === '') {
+          setErrorMessages({name: "name", message: errors.name});
+        }
+        else if(lastName === '') {
+          setErrorMessages({name: "lastname", message: errors.lastname});
+        }
+        else if(password === '') {
+          setErrorMessages({name: "pass", message: errors.pass_empty});
+        }
+    //     else if(date === '') {
+    //       setErrorMessages({name: "date", message: errors.date});
+    //    }
+        else if(email === '') {
+          setErrorMessages({name: "email", message: errors.email_empty});
+        }
+        else if(isValidEmail(email) !== true) {
+          setErrorMessages({name: "email", message: errors.email_empty});
+        }
+        else if(phoneNumber === '') {
+          setErrorMessages({name: "phoneNumber", message: errors.phoneNumber_empty});
+        }
+        else if(isValidPhoneNumber(phoneNumber) !== true) {
+          setErrorMessages({name: "phoneNumber", message: errors.phoneNumber_empty});
+        }
+        else if(privateQuestion === '') {
+          setErrorMessages({name: "pquestion", message: errors.pquestion});
+        }
+        else if(answerPrivateQuestion === '') {
+          setErrorMessages({name: "answer", message: errors.answer});
+        }
+        else if(!checkUsername()) {
+          setErrorMessages({name: "username", message: errors.username});
+        }
+        else if(!checkEmail()) {
+          setErrorMessages({name: "email", message: errors.email});
+        }
+        else if(!checkPhoneNumber()) {
+          setErrorMessages({name: "phoneNumber", message: errors.phoneNumber});
+        }
+        else{
+          setErrorMessages({});
+          signupUser();
+    
+          insertPassword();
+    
+          //login
+        }
+    
+        
+      };
+    
+      const renderErrorMessage = (name) =>
+        name === errorMessages.name && (
+          <div className="error">{errorMessages.message}</div>
+        );
+
+
+
+
+
+
+    //handle edit
+    const closeEditMode = (param) => {
+        switch (param) {
+            case 'username':
+                setUsernameEditMode(false);
+                break;
+            case 'password':
+                setPasswordEditMode(false);
+                break;
+            case 'lastName':
+                setLastNameEditMode(false);
+                break;
+            case 'name':
+                setNameEditMode(false);
+                break;
+            case 'email':
+                setEmailEditMode(false);
+                break;
+            case 'phoneNumber':
+                setPhoneNumberEditMode(false);
+                break;
+            case 'privateQuestion':
+                setPrivateQuestionEditMode(false);
+                break;
+            case 'answerPrivateQuestion':
+                setAnswerPrivateQuestionEditMode(false);
+                break;
+            
+            default:
+        }
+        ////////////////////////
+        handleSubmit()
     }
     
-    const onEditHandler = () => {
-        closeEditMode();
+    const openEditMode = (param) => {
+        
+        switch (param) {
+            case 'username':
+                setUsernameEditMode(true);
+                break;
+            case 'password':
+                setPasswordEditMode(true);
+                break;
+            case 'lastName':
+                setLastNameEditMode(true);
+                break;
+            case 'name':
+                setNameEditMode(true);
+                break;
+            case 'email':
+                setEmailEditMode(true);
+                break;
+            case 'phoneNumber':
+                setPhoneNumberEditMode(true);
+                break;
+            case 'privateQuestion':
+                setPrivateQuestionEditMode(true);
+                break;
+            case 'answerPrivateQuestion':
+                setAnswerPrivateQuestionEditMode(true);
+                break;
+            default:
+
+        }
+    }
+    
+    const onEditHandler = (param) => {
+        closeEditMode(param);
     }
 
     return(
         <>
             <div className="user-information user-information-container">
-                <div className="username_div">
-                    <div className="icon">
-                        <MdDashboard />
+                <div className="form">
+
+                    <div className="top-user-info">
+                        <image/>
+                        <div className="uname-div">
+                            <span className="username">{username}</span>
+                            
+                        </div>
+                        
+
                     </div>
-                    <label>test</label>
-                    <input id={id} readOnly={!editMode} type={"text"} value={username} onChange={(event) => {setUsername(event.target.value);}}/>
-                    <MdDashboard/>
-                    {editMode && (
-                    <button className="textfield--header-action"onClick={closeEditMode} aria-label="Cancel" title="Cancel" aria-controls={id}>
-                        <IoClose aria-hidden="true" />
-                    </button>
-                    )}
-                    <button onClick={editMode ? onEditHandler : openEditMode} aria-label={editMode ? 'Save' : 'Edit'} title={editMode ? 'Save' : 'Edit'} className="textfield--header-action"aria-controls={id}>                  
-                        {editMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
-                    </button>
+
+                    <div className="username_div info-item">
+                        <div className="icon">
+                                <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Username</label>
+                        {usernameEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('username')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={usernameEditMode ? ()=> {onEditHandler('username')} : ()=> {openEditMode('username')}} aria-label={usernameEditMode ? 'Save' : 'Edit'} title={usernameEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {usernameEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!usernameEditMode} type={"text"} value={username} onChange={(event) => {setUsername(event.target.value);}}/>
+                    </div>
+                    
+                    <div className="email_div info-item">
+                        <div className="icon">
+                                <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Email</label>
+                        {emailEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('email')}} aria-label="Cancel" title="Cancel" >
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={emailEditMode ? ()=> {onEditHandler('email')} : ()=> {openEditMode('email')}} aria-label={emailEditMode ? 'Save' : 'Edit'} title={emailEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {emailEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!emailEditMode} type={"text"} value={email} onChange={(event) => {setEmail(event.target.value);}}/>
+                    </div>
+
+                    <div className="password_div info-item">
+                        <div className="icon">
+                                <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Password</label>
+                        {passwordEditMode && (
+                            <button className="textfield--header-action" onClick={()=> {closeEditMode('password')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={passwordEditMode ? ()=> {onEditHandler('password')} : ()=> {openEditMode('password')}} aria-label={passwordEditMode ? 'Save' : 'Edit'} title={passwordEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {passwordEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!passwordEditMode} type={passwordShown ? "text" : "password"} value={password} onChange={(event) => {setPassword(event.target.value);}}/>
+                        <div className="pass_icon" onClick={togglePassword}>
+                            {passwordShown ? <BiShow /> : <BiHide />}
+                        </div>
+                    </div>
+
+                    <div className="name_div info-item">
+                        <div className="icon">
+                            <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>First Name</label>
+                        {nameEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('name')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={nameEditMode ? ()=> {onEditHandler('name')} : ()=> {openEditMode('name')}} aria-label={nameEditMode ? 'Save' : 'Edit'} title={nameEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {nameEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!nameEditMode} type={"text"} value={name} onChange={(event) => {setName(event.target.value);}}/>
+                    </div>
+
+
+                    <div className="lastname_div info-item">
+                        <div className="icon">
+                            <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Last Name</label>
+                        {lastNameEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('lastName')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={lastNameEditMode ? ()=> {onEditHandler('lastName')} : ()=> {openEditMode('lastName')}} aria-label={lastNameEditMode ? 'Save' : 'Edit'} title={lastNameEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {lastNameEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!lastNameEditMode} type={"text"} value={lastName} onChange={(event) => {setLastName(event.target.value);}}/>
+                    </div>
+
+
+                    <div className="phonenumber_div info-item">
+                        <div className="icon">
+                                <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Phone Number</label>
+                        {phoneNumberEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('phoneNumber')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={phoneNumberEditMode ? ()=> {onEditHandler('phoneNumber')} : ()=> {openEditMode('phoneNumber')}} aria-label={phoneNumberEditMode ? 'Save' : 'Edit'} title={phoneNumberEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {phoneNumberEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!phoneNumberEditMode} type={"text"} value={phoneNumber} onChange={(event) => {setPhoneNumber(event.target.value);}}/>
+                    </div>
+
+                    <div className="privatequestion_div info-item">
+                        <div className="icon">
+                                <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Private Question</label>
+                        {privateQuestionEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('privateQuestion')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={privateQuestionEditMode ? ()=> {onEditHandler('privateQuestion')} : ()=> {openEditMode('privateQuestion')}} aria-label={privateQuestionEditMode ? 'Save' : 'Edit'} title={privateQuestionEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {privateQuestionEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!privateQuestionEditMode} type={"text"} value={privateQuestion} onChange={(event) => {setPrivateQuestion(event.target.value);}}/>
+                    </div>
+
+
+                    <div className="phonenumber_div info-item">
+                        <div className="icon">
+                                <MdDashboard />
+                        </div>
+                        <div className="top">
+                        <label>Answer Private Question</label>
+                        {answerPrivateQuestionEditMode && (
+                            <button className="textfield--header-action"onClick={()=> {closeEditMode('answerPrivateQuestion')}} aria-label="Cancel" title="Cancel">
+                                <IoClose aria-hidden="true" />
+                            </button>
+                            )}
+                            <button onClick={answerPrivateQuestionEditMode ? ()=> {onEditHandler('answerPrivateQuestion')} : ()=> {openEditMode('answerPrivateQuestion')}} aria-label={answerPrivateQuestionEditMode ? 'Save' : 'Edit'} title={answerPrivateQuestionEditMode ? 'Save' : 'Edit'} className="textfield--header-action">                  
+                                {answerPrivateQuestionEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                            </button>
+                        </div>
+                        <input readOnly={!answerPrivateQuestionEditMode} type={"text"} value={answerPrivateQuestion} onChange={(event) => {setAnswerPrivateQuestion(event.target.value);}}/>
+                    </div>
+
+
                 </div>
                 
 
+
+
+
+
+                {/* <div className="phonenumber_div info-item">
+                    <div className="icon">
+                            <MdDashboard />
+                    </div>
+                    <div className="top">
+                    <label>Phone Number</label>
+                    {phoneNumberEditMode && (
+                        <button className="textfield--header-action"onClick={closeEditMode} aria-label="Cancel" title="Cancel" aria-controls={id}>
+                            <IoClose aria-hidden="true" />
+                        </button>
+                        )}
+                        <button onClick={phoneNumberEditMode ? onEditHandler : openEditMode} aria-label={phoneNumberEditMode ? 'Save' : 'Edit'} title={phoneNumberEditMode ? 'Save' : 'Edit'} className="textfield--header-action"aria-controls={id}>                  
+                            {phoneNumberEditMode ? (<IoIosSave aria-hidden="true" />) : (<MdEditSquare aria-hidden="true" />)}
+                        </button>
+                    </div>
+                    <input id={id} readOnly={!phoneNumberEditMode} type={"text"} value={phoneNumber} onChange={(event) => {setPhoneNumber(event.target.value);}}/>
+                </div> */}
+                
                    
                 
             </div>
