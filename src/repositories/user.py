@@ -120,3 +120,64 @@ class UserRepository(Repo):
         for i, atr in enumerate(self.model.__annotations__.keys()):
             model.__setattr__(atr, result[i])
         return model
+
+    def _update(self, name: str, value: str, user_name: str) -> True:
+        """
+        docstring
+        """
+        query = f"""
+            update {self.tn}
+            set {name}={value}
+            where user_name={user_name}
+            """
+        self.cur.execute(query)
+
+    ## update
+
+    def edit_user_name(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("user_name", new, old)
+
+    def edit_name(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("name", new, old)
+
+    def edit_family(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("family", new, old)
+
+    def edit_phone_number(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("phone_number", new, old)
+
+    def edit_email(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("email", new, old)
+
+    def edit_birth_day(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("birth_day", new, old)
+
+    def edit_question(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("question", new, old)
+
+    def edit_question_answer(self, new: str, old: str) -> True:
+        """
+        docstring
+        """
+        self._update("question_answer", new, old)
